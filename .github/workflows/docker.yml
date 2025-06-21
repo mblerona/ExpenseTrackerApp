@@ -2,7 +2,7 @@ name: Build Project and Push to Dockerhub Task
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build-and-push:
