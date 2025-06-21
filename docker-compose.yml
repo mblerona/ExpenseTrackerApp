@@ -1,8 +1,40 @@
+# version: "3.8"
+
+# services:
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "5000:5000"
+#     depends_on:
+#       - mongo
+
+#   mongo:
+#     image: mongo
+#     container_name: mongo
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo-data:/data/db
+
+#   frontend:
+#     build: ./frontend
+#     ports:
+#       - "8080:3000"
+#     depends_on:
+#       - backend
+
+# volumes:
+#   mongo-data:
+
+
+
+#TEST THE CI VERSION 
+
 version: "3.8"
 
 services:
   backend:
-    build: ./backend
+    image: rona03/expense-tracker-backend:latest
     ports:
       - "5000:5000"
     depends_on:
@@ -17,7 +49,7 @@ services:
       - mongo-data:/data/db
 
   frontend:
-    build: ./frontend
+    image: rona03/expense-tracker-frontend:latest
     ports:
       - "8080:3000"
     depends_on:
