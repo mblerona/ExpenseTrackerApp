@@ -2,19 +2,17 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from datetime import datetime
+from bson import ObjectId
 
 app = Flask(__name__)
 CORS(app)
 
-# MongoDB container hostname is "mongo" (from docker-compose)
 app.config["MONGO_URI"] = "mongodb://mongo:27017/expenses"
 mongo = PyMongo(app)
 
 @app.route("/expenses", methods=["POST"])
 def add_expense():
     data = request.get_json()
-
-    # Safely convert amount to float
     try:
         amount = float(data.get("amount"))
     except (TypeError, ValueError):
@@ -30,8 +28,21 @@ def add_expense():
 
 @app.route("/expenses", methods=["GET"])
 def get_expenses():
-    expenses = list(mongo.db.records.find({}, {"_id": 0}))
-    return jsonify(expenses)
+    expenses = mongo.db.records.find()
+    result = [{
+        "id": str(e["_id"]),
+        "amount": e["amount"],
+        "category": e["category"],
+        "date": e["date"]
+    } for e in expenses]
+    return jsonify(result)
+
+@app.route("/expenses/<id>", methods=["DELETE"])
+def delete_expense(id):
+    result = mongo.db.records.delete_one({"_id": ObjectId(id)})
+    if result.deleted_count == 1:
+        return jsonify({"msg": "Deleted"}), 200
+    return jsonify({"error": "Not found"}), 404
 
 @app.route("/stats", methods=["GET"])
 def get_monthly_averages():
@@ -39,7 +50,7 @@ def get_monthly_averages():
         {
             "$group": {
                 "_id": {
-                    "month": {"$substr": ["$date", 0, 7]},  # e.g., "2025-06"
+                    "month": {"$substr": ["$date", 0, 7]},
                     "category": "$category"
                 },
                 "total": {"$sum": "$amount"},
@@ -60,7 +71,6 @@ def get_monthly_averages():
             "$sort": {"month": -1, "category": 1}
         }
     ]
-
     result = list(mongo.db.records.aggregate(pipeline))
     return jsonify(result)
 

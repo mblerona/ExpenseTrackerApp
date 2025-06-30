@@ -3,7 +3,6 @@ const list = document.getElementById("expense-list");
 const dateInput = document.getElementById("date");
 const statsTable = document.getElementById("stats-table").querySelector("tbody");
 
-// Auto-fill today’s date
 const today = new Date().toISOString().split("T")[0];
 dateInput.value = today;
 
@@ -28,6 +27,16 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+async function deleteExpense(id) {
+  const res = await fetch(`http://localhost:5000/expenses/${id}`, {
+    method: "DELETE",
+  });
+  if (res.ok) {
+    loadExpenses();
+    loadStats();
+  }
+}
+
 async function loadExpenses() {
   const res = await fetch("http://localhost:5000/expenses");
   const data = await res.json();
@@ -37,7 +46,6 @@ async function loadExpenses() {
 
   data.forEach((exp) => {
     const item = document.createElement("li");
-
     let dateStr = exp.date;
     let date = dateStr.split("T")[0];
     let time = dateStr.includes("T") ? dateStr.split("T")[1].split(".")[0] : "--:--";
@@ -47,6 +55,7 @@ async function loadExpenses() {
       <div><strong>🏷️ Category:</strong> ${exp.category}</div>
       <div><strong>📅 Date:</strong> ${date}</div>
       <div><strong>⏰ Time:</strong> ${time}</div>
+      <button onclick="deleteExpense('${exp.id}')">🗑️ Delete</button>
     `;
     list.appendChild(item);
     total += Number(exp.amount);
@@ -64,7 +73,6 @@ async function loadStats() {
   const data = await res.json();
 
   statsTable.innerHTML = "";
-
   data.forEach((stat) => {
     const row = document.createElement("tr");
     row.innerHTML = `
