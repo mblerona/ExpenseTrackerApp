@@ -13,7 +13,7 @@ form.addEventListener("submit", async (e) => {
   const category = document.getElementById("category").value;
   const date = dateInput.value;
 
-  const res = await fetch("http://backend:5000/expenses", {
+  const res = await fetch("/expenses", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ amount, category, date }),
@@ -28,7 +28,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 async function deleteExpense(id) {
-  const res = await fetch(`http://backend:5000/expenses/${id}`, {
+  const res = await fetch(`/expenses/${id}`, {
     method: "DELETE",
   });
   if (res.ok) {
@@ -38,7 +38,7 @@ async function deleteExpense(id) {
 }
 
 async function loadExpenses() {
-  const res = await fetch("http://backend:5000/expenses");
+  const res = await fetch("/expenses");
   const data = await res.json();
 
   list.innerHTML = "";
@@ -69,7 +69,7 @@ async function loadExpenses() {
 }
 
 async function loadStats() {
-  const res = await fetch("http://backend:5000/stats");
+  const res = await fetch("/stats");
   const data = await res.json();
 
   statsTable.innerHTML = "";
