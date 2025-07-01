@@ -52,3 +52,10 @@ spec:
                 name: backend
                 port:
                   number: 5000
+          - path: /pod
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 5000
