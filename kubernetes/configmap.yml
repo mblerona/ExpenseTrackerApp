@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: expense-tracker
+data:
+  FLASK_ENV: production
+  APP_NAME: ExpenseTracker
+  MONGO_HOST: mongo
+  MONGO_PORT: "27017"
+  MONGO_DB: expenses

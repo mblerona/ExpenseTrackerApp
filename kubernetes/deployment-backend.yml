@@ -20,5 +20,48 @@ spec:
           ports:
             - containerPort: 5000
           env:
-            - name: MONGO_URI
-              value: mongodb://mongo:27017/expenses
+            - name: FLASK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: FLASK_ENV
+
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: APP_NAME
+
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: MONGO_HOST
+
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: MONGO_PORT
+
+            - name: MONGO_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: MONGO_DB
+
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_USER
+
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_PASS
+
+
+
+
